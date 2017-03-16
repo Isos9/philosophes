@@ -14,17 +14,17 @@
 static bool	checkParameters(char **argv) {
   if ((atoi(argv[2]) <= 0) ||
       (atoi(argv[4]) <= 0))
-    return EXIT_FAILURE;
+    return false;
   if ((strcmp(argv[1], "-p") != 0) ||
       (strcmp(argv[3], "-e") != 0))
-    return EXIT_FAILURE;
-  return EXIT_SUCCESS;
+    return false;
+  return true;
 };
 
 static bool	initPhilosopher(t_manager *manager, char **argv) {
   int		i;
 
-  if (checkParameters(argv))
+  if (!checkParameters(argv))
     return false;
   manager->nbPhilos = atoi(argv[2]);
   manager->nbChopsticks = manager->nbPhilos;
