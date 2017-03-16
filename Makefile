@@ -1,3 +1,5 @@
+
+
 DEBUG=no
 
 C= gcc
@@ -29,27 +31,27 @@ OBJECTS  := 		$(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 RM       = 			rm -rf
 
 $(BINDIR)/$(NAME):	$(OBJECTS)
-					@$(C) -o $@ $(CFLAGS) $(OBJECTS)
-					@echo "\033[94mProject $(NAME) build successfully!\033[0m"
+			@$(C) -o $@ $(CFLAGS) $(OBJECTS) -lpthread
+			@echo "\033[94mProject $(NAME) build successfully!\033[0m"
 
-$(OBJECTS):			$(OBJDIR)/%.o : $(SRCDIR)/%.c
-					@mkdir -p $(dir $@)
-					@$(C) $(CFLAGS) -c $< -o $@
-					@echo "[\033[95m$(COUNT)\033[0m/\033[93m$(NBSOURCES)\033[0m][\033[92m$<\033[0m]"
-					@$(eval COUNT=$(shell echo $$(($(COUNT)+1))))
+$(OBJECTS):		$(OBJDIR)/%.o : $(SRCDIR)/%.c
+			@mkdir -p $(dir $@)
+			@$(C) $(CFLAGS) -c $< -o $@
+			@echo "[\033[95m$(COUNT)\033[0m/\033[93m$(NBSOURCES)\033[0m][\033[92m$<\033[0m]"
+			@$(eval COUNT=$(shell echo $$(($(COUNT)+1))))
 
-all:				$(BINDIR)/$(NAME)
+all:			$(BINDIR)/$(NAME)
 
-.PHONY:		 		clean
+.PHONY:		 	clean
 
 clean:
-					@$(RM) $(OBJDIR)
-					@echo "\033[93mCleanup complete!\033[0m"
+			@$(RM) $(OBJDIR)
+			@echo "\033[93mCleanup complete!\033[0m"
 
-.PHONY: 			fclean
+.PHONY: 		fclean
 
-fclean: 			clean
-					@$(RM) $(BINDIR)/$(NAME)
-					@echo "\033[93mExecutable removed!\033[0m"
+fclean: 		clean
+			@$(RM) $(BINDIR)/$(NAME)
+			@echo "\033[93mExecutable removed!\033[0m"
 
-re:	fclean $(BINDIR)/$(NAME)
+re:			fclean $(BINDIR)/$(NAME)

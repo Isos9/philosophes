@@ -8,6 +8,28 @@
 
 #include "../includes/philosophers.h"
 
+static bool	waitForPhilosophers(t_manager *manager) {
+  int		i;
+
+  i = 0;
+  while (i < manager->nbPhilos) {
+    if (pthread_join(manager->philos[i++].thread, NULL) != 0)
+      return false;
+    printf("%d a fini\n", i - 1);
+  }
+  return true;
+}
+
+static void	*philosopherAlgorithm(void *_manager) {
+  t_manager	*manager;
+
+  manager = (t_manager *)_manager;
+  (void)manager;
+  printf("philosopher bitch\n");
+  sleep(2);
+  pthread_exit(NULL);
+}
+
 /*
 ** Check Parameters.
 */
@@ -29,14 +51,17 @@ static bool	initPhilosopher(t_manager *manager, char **argv) {
   manager->nbPhilos = atoi(argv[2]);
   manager->nbChopsticks = manager->nbPhilos;
   manager->mealsLimit = atoi(argv[4]);
+  manager->limitReached = false;
   if (!(manager->philos = malloc(sizeof(t_philos) * manager->nbPhilos)))
     return false;
   i = 0;
   while (i < manager->nbPhilos) {
     manager->philos[i].id = i;
     manager->philos[i].lastAction = UNDEFINED;
+    if (pthread_mutex_init(&manager->philos[i].chopstick, NULL) != 0 ||
+	pthread_create(&manager->philos[i].thread, NULL, &philosopherAlgorithm, manager) != 0)
+      return false;
     i++;
-    // thread && mutex
   }
   return true;
 }
@@ -46,11 +71,8 @@ static bool     LaunchPhilosopher(char **argv) {
 
   if (!initPhilosopher(&manager, argv))
     return EXIT_FAILURE;
-  for (int i = 0; i < manager.nbPhilos; i++) {
-    printf("Philosophe [%d] => %d\n", manager.philos[i].id, (int)manager.philos[i].lastAction);
-  }
-  (void)manager;
-  (void)argv;
+  if (!waitForPhilosophers(&manager))
+    return EXIT_FAILURE;
   return EXIT_SUCCESS;
 }
 

@@ -35,6 +35,7 @@ typedef struct		s_manager {
   int			nbPhilos;
   int			nbChopsticks;
   int			mealsLimit;
+  bool			limitReached;
 }			t_manager;
 
 #endif /* _PHILOSOPHERS_H_ */
