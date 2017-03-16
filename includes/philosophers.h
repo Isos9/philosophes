@@ -17,7 +17,7 @@
 #include <stdbool.h>
 
 typedef enum {
-    UNDEFINED = (-true),
+    UNDEFINED = -1,
     EAT = 0,
     THINK = 1,
     SLEEP = 2
