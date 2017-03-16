@@ -28,6 +28,7 @@ typedef struct		s_philos {
   Action		lastAction;
   pthread_t		thread;
   pthread_mutex_t	chopstick;
+  pthread_cond_t	cond;
 }			t_philos;
 
 typedef struct		s_manager {
