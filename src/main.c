@@ -59,6 +59,7 @@ static bool	initPhilosopher(t_manager *manager, char **argv) {
     manager->philos[i].id = i;
     manager->philos[i].lastAction = UNDEFINED;
     if (pthread_mutex_init(&manager->philos[i].chopstick, NULL) != 0 ||
+	pthread_cond_init(&manager->cond, NULL) != 0 ||
 	pthread_create(&manager->philos[i].thread, NULL, &philosopherAlgorithm, manager) != 0)
       return false;
     i++;

@@ -28,7 +28,6 @@ typedef struct		s_philos {
   Action		lastAction;
   pthread_t		thread;
   pthread_mutex_t	chopstick;
-  pthread_cond_t	cond;
 }			t_philos;
 
 typedef struct		s_manager {
@@ -37,6 +36,7 @@ typedef struct		s_manager {
   int			nbChopsticks;
   int			mealsLimit;
   bool			limitReached;
+  pthread_cond_t	cond;
 }			t_manager;
 
 #endif /* _PHILOSOPHERS_H_ */
