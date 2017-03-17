@@ -6,7 +6,8 @@
 // Last Modified time: 2017-03-16 21:57:16
 //
 
-#include "../includes/philosophers.h"
+#include "extern.h"
+#include "philosophers.h"
 
 static bool	waitForPhilosophers(t_table *table, t_philo *philosophers) {
   int		i;
@@ -93,6 +94,7 @@ static bool	initPhilosopher(t_table *table, char **argv) {
   }
   if (!waitForPhilosophers(table, philosophers))
     return false;
+  deleteTable(table);
   return true;
 }
 
@@ -100,12 +102,16 @@ static bool     LaunchPhilosopher(char **argv) {
   t_table	table;
 
   srand(time(NULL));
-  if (!initPhilosopher(&table, argv))
+  if (!initPhilosopher(&table, argv)) {
+    RCFCleanup();
     return EXIT_FAILURE;
+  }
+  RCFCleanup();
   return EXIT_SUCCESS;
 }
 
 int		main(int argc, char **argv) 
 {
-    return argc == 5 ? LaunchPhilosopher(argv) : EXIT_FAILURE;
+  RCFStartup(argc, argv);
+  return argc == 5 ? LaunchPhilosopher(argv) : EXIT_FAILURE;
 }

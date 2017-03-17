@@ -46,6 +46,6 @@ typedef struct		s_philo {
 void	philoThink(t_philo *philosopher, int whichChopstick);
 void	philoEat(t_philo *philosopher);
 void	philoSleep(t_philo *philosopher);
-void	deleteTable(t_philo *philosopher);
+void	deleteTable(t_table *table);
 
 #endif /* _PHILOSOPHERS_H_ */
