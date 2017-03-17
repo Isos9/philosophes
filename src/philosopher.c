@@ -68,6 +68,9 @@ static bool	initPhilosopher(t_table *table, char **argv) {
   if (pthread_cond_init(&table->cond, NULL) != 0)
     return false;
 
+  if (table->nbPhilos <= 1)
+    return false;
+  
   pthread_mutex_t	_bowls[table->nbPhilos];
   t_philo		philosophers[table->nbPhilos];
 
@@ -79,7 +82,7 @@ static bool	initPhilosopher(t_table *table, char **argv) {
 
   if (pthread_barrier_init(&table->barrier, NULL, table->nbPhilos) != 0)
     return false;
-
+  
   i = 0;
   while (i < table->nbPhilos) {
     philosophers[i].id = i;
