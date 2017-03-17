@@ -23,20 +23,19 @@ typedef enum {
     SLEEP = 2
 }      Action;
 
-typedef struct		s_philos {
-  int			id;
-  Action		lastAction;
-  pthread_t		thread;
-  pthread_mutex_t	chopstick;
-}			t_philos;
-
-typedef struct		s_manager {
-  struct s_philos	*philos;
+typedef struct		s_table {
   int			nbPhilos;
-  int			nbChopsticks;
   int			mealsLimit;
   bool			limitReached;
   pthread_cond_t	cond;
-}			t_manager;
+  pthread_mutex_t	*bowls;
+}			t_table;
+
+typedef struct		s_philo {
+  int			id;
+  Action		lastAction;
+  pthread_t		thread;
+  struct s_table	*table;
+}			t_philo;
 
 #endif /* _PHILOSOPHERS_H_ */
