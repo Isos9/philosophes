@@ -86,9 +86,9 @@ static bool	initPhilosopher(t_table *table, char **argv) {
     philosophers[i].nbMeals = 0;
     philosophers[i].lastAction = UNDEFINED;
     philosophers[i].table = table;
-    philosophers[i].timeToEat = (rand() % 1000) + 100;
-    philosophers[i].timeToSleep = (rand() % 1000) + 100;
-    philosophers[i].timeToThink = (rand() % 1000) + 100;
+    philosophers[i].timeToEat = 100;
+    philosophers[i].timeToSleep = 100;
+    philosophers[i].timeToThink = 100;
 
     if (pthread_create(&philosophers[i].thread, NULL, &philosopherAlgorithm, &philosophers[i]) != 0)
       return false;
