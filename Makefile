@@ -5,7 +5,7 @@ DEBUG=no
 C= gcc
 
 # compiling flags here
-CFLAGS	= -W -Wall -Wextra -Werror -I./includes/ -O2
+CFLAGS	= -W -Wall -Wextra -Werror -I./includes/
 
 # if debug is set to yes, add -g3 flag
 ifeq ($(DEBUG),yes)

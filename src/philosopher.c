@@ -26,18 +26,20 @@ static void	*philosopherAlgorithm(void *_philosopher) {
   philosopher = (t_philo *)_philosopher;
   pthread_barrier_wait(&philosopher->table->barrier);
   while (!philosopher->table->limitReached)
-    {      
+    {
       // EAT 
-      if (philosopher->lastAction == UNDEFINED || philosopher->lastAction == THINK || !(rand() % 4))
-	philoEat(philosopher);
 
       // THINK
-      else if (philosopher->lastAction == UNDEFINED || philosopher->lastAction == SLEEP) {
-	rand() % 4 == 0 ? philoEat(philosopher) : philoThink(philosopher);
+      if (philosopher->lastAction == UNDEFINED || philosopher->lastAction == SLEEP) {
+	while (philosopher->lastAction != THINK)
+	  philoThink(philosopher);
       }
 
-      // SLEEP
-      else
+      if (philosopher->lastAction == UNDEFINED || philosopher->lastAction == THINK)
+	while (philosopher->lastAction != EAT)
+	  philoEat(philosopher);
+
+      if (philosopher->lastAction != THINK)
 	philoSleep(philosopher);
     }
   pthread_exit(NULL);
@@ -89,9 +91,9 @@ static bool	initPhilosopher(t_table *table, char **argv) {
     philosophers[i].nbMeals = 0;
     philosophers[i].lastAction = UNDEFINED;
     philosophers[i].table = table;
-    philosophers[i].timeToEat = 100;
-    philosophers[i].timeToSleep = 100;
-    philosophers[i].timeToThink = 100;
+    philosophers[i].timeToEat = 1000;
+    philosophers[i].timeToSleep = 1000;
+    philosophers[i].timeToThink = 1000;
 
     if (pthread_create(&philosophers[i].thread, NULL, &philosopherAlgorithm, &philosophers[i]) != 0)
       return false;
