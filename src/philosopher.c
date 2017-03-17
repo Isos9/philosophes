@@ -6,8 +6,8 @@
 // Last Modified time: 2017-03-16 21:57:16
 //
 
-#include "extern.h"
-#include "philosophers.h"
+#include "../includes/extern.h"
+#include "../includes/philosophers.h"
 
 static bool	waitForPhilosophers(t_table *table, t_philo *philosophers) {
   int		i;
@@ -23,23 +23,22 @@ static bool	waitForPhilosophers(t_table *table, t_philo *philosophers) {
 
 static void	*philosopherAlgorithm(void *_philosopher) {
   t_philo	*philosopher;
-  int		i;
 
   philosopher = (t_philo *)_philosopher;
-  i = philosopher->id + 1;
   while (!philosopher->table->limitReached)
     {
-      if (pthread_mutex_trylock(&philosopher->table->bowls[i - 1]) != 0
-	  && pthread_mutex_trylock(&philosopher->table->bowls[i]) != 0)
-	philoSleep(philosopher);
-      else if (pthread_mutex_trylock(&philosopher->table->bowls[i - 1]) == 0
-	       && pthread_mutex_trylock(&philosopher->table->bowls[i]) != 0)
-	philoThink(philosopher, 0);
-      else if (pthread_mutex_trylock(&philosopher->table->bowls[i - 1]) != 0
-	       && pthread_mutex_trylock(&philosopher->table->bowls[i]) == 0)
-	philoThink(philosopher, 1);
-      else
+      // EAT 
+      if (philosopher->lastAction == UNDEFINED || philosopher->lastAction == THINK || !(rand() % 4))
 	philoEat(philosopher);
+
+      // THINK
+      else if (philosopher->lastAction == UNDEFINED || philosopher->lastAction == SLEEP) {
+	rand() % 2 == 0 ? philoEat(philosopher) : philoThink(philosopher);
+      }
+
+      // SLEEP
+      else
+	philoSleep(philosopher);
     }
   pthread_exit(NULL);
 }
@@ -84,9 +83,9 @@ static bool	initPhilosopher(t_table *table, char **argv) {
     philosophers[i].nbMeals = 0;
     philosophers[i].lastAction = UNDEFINED;
     philosophers[i].table = table;
-    philosophers[i].timeToEat = (rand() % 5) + 1;
-    philosophers[i].timeToSleep = (rand() % 5) + 1;
-    philosophers[i].timeToThink = (rand() % 5) + 1;
+    philosophers[i].timeToEat = (rand() % 100) + 100;
+    philosophers[i].timeToSleep = (rand() % 100) + 100;
+    philosophers[i].timeToThink = (rand() % 100) + 100;
 
     if (pthread_create(&philosophers[i].thread, NULL, &philosopherAlgorithm, &philosophers[i]) != 0)
       return false;
@@ -103,15 +102,15 @@ static bool     LaunchPhilosopher(char **argv) {
 
   srand(time(NULL));
   if (!initPhilosopher(&table, argv)) {
-    RCFCleanup();
+    // RCFCleanup();
     return EXIT_FAILURE;
   }
-  RCFCleanup();
+  //  RCFCleanup();
   return EXIT_SUCCESS;
 }
 
 int		main(int argc, char **argv) 
 {
-  RCFStartup(argc, argv);
+  //  RCFStartup(argc, argv);
   return argc == 5 ? LaunchPhilosopher(argv) : EXIT_FAILURE;
 }

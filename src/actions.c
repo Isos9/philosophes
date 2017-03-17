@@ -5,36 +5,59 @@
 ** Login   <marwane.khsime@epitech.eu>
 ** 
 ** Started on  Fri Mar 17 01:03:58 2017 Marwane
-** Last update Fri Mar 17 04:26:31 2017 Marwane
+** Last update Fri Mar 17 06:44:26 2017 Marwane
 */
 
-#include "extern.h"
-#include "philosophers.h"
+#include "../includes/extern.h"
+#include "../includes/philosophers.h"
 
-void	philoThink(t_philo *philosopher, int whichChopstick) {
-  lphilo_think();
-  lphilo_take_chopstick(&philosopher->table->bowls[(philosopher->id + whichChopstick) % philosopher->table->nbPhilos]);
-  sleep(philosopher->timeToThink);
-  pthread_mutex_unlock(&philosopher->table->bowls[(philosopher->id + whichChopstick) % philosopher->table->nbPhilos]);
-  lphilo_release_chopstick(&philosopher->table->bowls[(philosopher->id + whichChopstick) % philosopher->table->nbPhilos]);
+void	philoThink(t_philo *philosopher) {
+  int whichChopstick;
+
+  if ((whichChopstick = 0 && philosopher->lastAction != THINK && pthread_mutex_trylock(&philosopher->table->bowls[philosopher->id]) == 0) ||
+      (whichChopstick = 1 && philosopher->lastAction != THINK && pthread_mutex_trylock(&philosopher->table->bowls[(philosopher->id + 1) % philosopher->table->nbPhilos]) == 0)) {
+
+    //lphilo_think();
+    //  lphilo_take_chopstick(&philosopher->table->bowls[(philosopher->id + whichChopstick) % philosopher->table->nbPhilos]);
+    printf("%d réfléchit\n", philosopher->id);
+    philosopher->lastAction = THINK;
+    usleep(philosopher->timeToThink);
+    pthread_mutex_unlock(&philosopher->table->bowls[(philosopher->id + whichChopstick) % philosopher->table->nbPhilos]);
+    //lphilo_release_chopstick(&philosopher->table->bowls[(philosopher->id + whichChopstick) % philosopher->table->nbPhilos]);
+  }
 }
 
 void	philoEat(t_philo *philosopher) {
-  lphilo_take_chopstick(&philosopher->table->bowls[philosopher->id]);
-  lphilo_take_chopstick(&philosopher->table->bowls[philosopher->id + 1]);
-  lphilo_eat();
-  sleep(philosopher->timeToThink);
-  ++philosopher->nbMeals >= philosopher->table->mealsLimit ? philosopher->table->limitReached = true : 0;
-  philosopher->lastAction = EAT;
-  pthread_mutex_unlock(&philosopher->table->bowls[philosopher->id]);
-  lphilo_release_chopstick(&philosopher->table->bowls[philosopher->id]);
-  pthread_mutex_unlock(&philosopher->table->bowls[(philosopher->id + 1) % philosopher->table->nbPhilos]);
-  lphilo_release_chopstick(&philosopher->table->bowls[(philosopher->id + 1) % philosopher->table->nbPhilos]);
+  int	right;
+  int	left;
+
+  if ((right = pthread_mutex_trylock(&philosopher->table->bowls[(philosopher->id + 1) % philosopher->table->nbPhilos])) == 0 &&
+      (left = pthread_mutex_trylock(&philosopher->table->bowls[philosopher->id])) == 0) {
+
+    //  lphilo_take_chopstick(&philosopher->table->bowls[philosopher->id]);
+    //  lphilo_take_chopstick(&philosopher->table->bowls[philosopher->id + 1]);
+    //lphilo_eat();
+    printf("%d mange\n", philosopher->id);
+    usleep(philosopher->timeToThink);
+    ++philosopher->nbMeals >= philosopher->table->mealsLimit ? philosopher->table->limitReached = true : 0;
+    philosopher->lastAction = EAT;
+    pthread_mutex_unlock(&philosopher->table->bowls[philosopher->id]);
+    // lphilo_release_chopstick(&philosopher->table->bowls[philosopher->id]);
+    pthread_mutex_unlock(&philosopher->table->bowls[(philosopher->id + 1) % philosopher->table->nbPhilos]);
+    //lphilo_release_chopstick(&philosopher->table->bowls[(philosopher->id + 1) % philosopher->table->nbPhilos]);
+
+  }
+
+  else {
+    right != 0 ? pthread_mutex_unlock(&philosopher->table->bowls[(philosopher->id + 1) % philosopher->table->nbPhilos]) : false;
+    left != 0 ? pthread_mutex_unlock(&philosopher->table->bowls[philosopher->id]) : false;
+  }
 }
 
 void	philoSleep(t_philo *philosopher) {
-  lphilo_sleep();
-  sleep(philosopher->timeToSleep);
+  //  lphilo_sleep();
+  printf("%d dort\n", philosopher->id);
+  usleep(philosopher->timeToSleep);
   philosopher->lastAction = SLEEP;
 }
 

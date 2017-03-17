@@ -31,7 +31,7 @@ OBJECTS  := 		$(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 RM       = 			rm -rf
 
 $(BINDIR)/$(NAME):	$(OBJECTS)
-			@$(C) -o $@ $(CFLAGS) $(OBJECTS) -L. -lpthread -fno-builtin -lriceferee
+			@$(C) -o $@ $(CFLAGS) $(OBJECTS) -L. -lriceferee -lpthread
 			@echo "\033[94mProject $(NAME) build successfully!\033[0m"
 
 $(OBJECTS):		$(OBJDIR)/%.o : $(SRCDIR)/%.c
