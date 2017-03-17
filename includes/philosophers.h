@@ -34,6 +34,7 @@ typedef struct		s_table {
 
 typedef struct		s_philo {
   int			id;
+  int			nbMeals;
   int			timeToEat;
   int			timeToSleep;
   int			timeToThink;

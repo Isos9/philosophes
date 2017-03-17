@@ -67,6 +67,7 @@ static bool	initPhilosopher(t_table *table, char **argv) {
   i = 0;
   while (i < table->nbPhilos) {
     philosophers[i].id = i;
+    philosophers[i].nbMeals = 0;
     philosophers[i].lastAction = UNDEFINED;
     philosophers[i].table = table;
     philosophers[i].timeToEat = (rand() % 5) + 1;
