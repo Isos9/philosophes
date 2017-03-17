@@ -22,11 +22,24 @@ static bool	waitForPhilosophers(t_table *table, t_philo *philosophers) {
 
 static void	*philosopherAlgorithm(void *_philosopher) {
   t_philo	*philosopher;
+  int		i;
 
   philosopher = (t_philo *)_philosopher;
-  printf("hello %d\n", philosopher->id);
-  (void)philosopher;
-  sleep(2);
+  i = philosopher->id + 1;
+  while (!philosopher->table->limitReached)
+    {
+      if (pthread_mutex_trylock(&philosopher->table->bowls[i - 1]) != 0
+	  && pthread_mutex_trylock(&philosopher->table->bowls[i]) != 0)
+	philoSleep(philosopher);
+      else if (pthread_mutex_trylock(&philosopher->table->bowls[i - 1]) == 0
+	       && pthread_mutex_trylock(&philosopher->table->bowls[i]) != 0)
+	philoThink(philosopher, 0);
+      else if (pthread_mutex_trylock(&philosopher->table->bowls[i - 1]) != 0
+	       && pthread_mutex_trylock(&philosopher->table->bowls[i]) == 0)
+	philoThink(philosopher, 1);
+      else
+	philoEat(philosopher);
+    }
   pthread_exit(NULL);
 }
 
