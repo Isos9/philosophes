@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <stdbool.h>
+#include <time.h>
 
 typedef enum {
     UNDEFINED = -1,
@@ -33,6 +34,9 @@ typedef struct		s_table {
 
 typedef struct		s_philo {
   int			id;
+  int			timeToEat;
+  int			timeToSleep;
+  int			timeToThink;
   Action		lastAction;
   pthread_t		thread;
   struct s_table	*table;

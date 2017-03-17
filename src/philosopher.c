@@ -69,6 +69,9 @@ static bool	initPhilosopher(t_table *table, char **argv) {
     philosophers[i].id = i;
     philosophers[i].lastAction = UNDEFINED;
     philosophers[i].table = table;
+    philosophers[i].timeToEat = (rand() % 5) + 1;
+    philosophers[i].timeToSleep = (rand() % 5) + 1;
+    philosophers[i].timeToThink = (rand() % 5) + 1;
 
     if (pthread_create(&philosophers[i].thread, NULL, &philosopherAlgorithm, &philosophers[i]) != 0)
       return false;
@@ -82,6 +85,7 @@ static bool	initPhilosopher(t_table *table, char **argv) {
 static bool     LaunchPhilosopher(char **argv) {
   t_table	table;
 
+  srand(time(NULL));
   if (!initPhilosopher(&table, argv))
     return EXIT_FAILURE;
   return EXIT_SUCCESS;
