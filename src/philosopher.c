@@ -26,14 +26,14 @@ static void	*philosopherAlgorithm(void *_philosopher) {
 
   philosopher = (t_philo *)_philosopher;
   while (!philosopher->table->limitReached)
-    {
+    {      
       // EAT 
       if (philosopher->lastAction == UNDEFINED || philosopher->lastAction == THINK || !(rand() % 4))
 	philoEat(philosopher);
 
       // THINK
       else if (philosopher->lastAction == UNDEFINED || philosopher->lastAction == SLEEP) {
-	rand() % 2 == 0 ? philoEat(philosopher) : philoThink(philosopher);
+	rand() % 4 == 0 ? philoEat(philosopher) : philoThink(philosopher);
       }
 
       // SLEEP
