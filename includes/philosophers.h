@@ -29,6 +29,7 @@ typedef struct		s_table {
   int			mealsLimit;
   bool			limitReached;
   pthread_cond_t	cond;
+  pthread_barrier_t	barrier;
   pthread_mutex_t	*bowls;
 }			t_table;
 

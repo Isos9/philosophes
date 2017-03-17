@@ -9,8 +9,6 @@
 #include "../includes/extern.h"
 #include "../includes/philosophers.h"
 
-/* static pthread_barrier_t	g_barrier; */
-
 static bool	waitForPhilosophers(t_table *table, t_philo *philosophers) {
   int		i;
 
@@ -26,8 +24,7 @@ static void	*philosopherAlgorithm(void *_philosopher) {
   t_philo	*philosopher;
 
   philosopher = (t_philo *)_philosopher;
-  /* pthread_barrier_wait(&g_barrier); */
-  /* printf("passage de barrier\n"); */
+  pthread_barrier_wait(&philosopher->table->barrier);
   while (!philosopher->table->limitReached)
     {      
       // EAT 
@@ -80,8 +77,8 @@ static bool	initPhilosopher(t_table *table, char **argv) {
     if (pthread_mutex_init(&table->bowls[i++], NULL) != 0)
       return false;
 
-  /* if (pthread_barrier_init(&g_barrier, NULL, table->nbPhilos) != 0) */
-  /*   return false; */
+  if (pthread_barrier_init(&table->barrier, NULL, table->nbPhilos) != 0)
+    return false;
 
   i = 0;
   while (i < table->nbPhilos) {
