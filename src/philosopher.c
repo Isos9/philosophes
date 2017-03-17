@@ -9,6 +9,8 @@
 #include "../includes/extern.h"
 #include "../includes/philosophers.h"
 
+/* static pthread_barrier_t	g_barrier; */
+
 static bool	waitForPhilosophers(t_table *table, t_philo *philosophers) {
   int		i;
 
@@ -16,7 +18,6 @@ static bool	waitForPhilosophers(t_table *table, t_philo *philosophers) {
   while (i < table->nbPhilos) {
     if (pthread_join(philosophers[i++].thread, NULL) != 0)
       return false;
-    printf("%d a fini\n", i - 1);
   }
   return true;
 }
@@ -25,6 +26,8 @@ static void	*philosopherAlgorithm(void *_philosopher) {
   t_philo	*philosopher;
 
   philosopher = (t_philo *)_philosopher;
+  /* pthread_barrier_wait(&g_barrier); */
+  /* printf("passage de barrier\n"); */
   while (!philosopher->table->limitReached)
     {      
       // EAT 
@@ -77,15 +80,18 @@ static bool	initPhilosopher(t_table *table, char **argv) {
     if (pthread_mutex_init(&table->bowls[i++], NULL) != 0)
       return false;
 
+  /* if (pthread_barrier_init(&g_barrier, NULL, table->nbPhilos) != 0) */
+  /*   return false; */
+
   i = 0;
   while (i < table->nbPhilos) {
     philosophers[i].id = i;
     philosophers[i].nbMeals = 0;
     philosophers[i].lastAction = UNDEFINED;
     philosophers[i].table = table;
-    philosophers[i].timeToEat = (rand() % 100) + 100;
-    philosophers[i].timeToSleep = (rand() % 100) + 100;
-    philosophers[i].timeToThink = (rand() % 100) + 100;
+    philosophers[i].timeToEat = (rand() % 1000) + 100;
+    philosophers[i].timeToSleep = (rand() % 1000) + 100;
+    philosophers[i].timeToThink = (rand() % 1000) + 100;
 
     if (pthread_create(&philosophers[i].thread, NULL, &philosopherAlgorithm, &philosophers[i]) != 0)
       return false;
@@ -93,7 +99,6 @@ static bool	initPhilosopher(t_table *table, char **argv) {
   }
   if (!waitForPhilosophers(table, philosophers))
     return false;
-  deleteTable(table);
   return true;
 }
 
@@ -102,15 +107,15 @@ static bool     LaunchPhilosopher(char **argv) {
 
   srand(time(NULL));
   if (!initPhilosopher(&table, argv)) {
-    // RCFCleanup();
+    RCFCleanup();
     return EXIT_FAILURE;
   }
-  //  RCFCleanup();
+   RCFCleanup();
   return EXIT_SUCCESS;
 }
 
 int		main(int argc, char **argv) 
 {
-  //  RCFStartup(argc, argv);
+   RCFStartup(argc, argv);
   return argc == 5 ? LaunchPhilosopher(argv) : EXIT_FAILURE;
 }
