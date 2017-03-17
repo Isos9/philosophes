@@ -5,7 +5,7 @@
 ** Login   <marwane.khsime@epitech.eu>
 ** 
 ** Started on  Fri Mar 17 01:03:58 2017 Marwane
-** Last update Fri Mar 17 03:36:37 2017 Marwane
+** Last update Fri Mar 17 04:02:10 2017 Marwane
 */
 
 #include "../includes/philosophers.h"
@@ -29,4 +29,15 @@ void	philoSleep(t_philo *philosopher) {
   printf("philosopher %d sleeps\n", philosopher->id);
   sleep(philosopher->timeToSleep);
   philosopher->lastAction = SLEEP;
+}
+
+void	deleteTable(t_philo *philosopher) {
+  int	i;
+
+  i = 0;
+  while (i < philosopher->table->nbPhilos) {
+    if (pthread_mutex_destroy(&philosopher->table->bowls[i++]) != 0)
+      fprintf(stderr, "Failed to destroy a mutex\n");
+    
+  }
 }
