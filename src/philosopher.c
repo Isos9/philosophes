@@ -25,21 +25,16 @@ static void	*philosopherAlgorithm(void *_philosopher) {
 
   philosopher = (t_philo *)_philosopher;
   pthread_barrier_wait(&philosopher->table->barrier);
-  while (!philosopher->table->limitReached)
+
+  while (!philosopher->table->limitReached || philosopher->nbMeals < philosopher->table->mealsLimit)
     {
-      // EAT 
+      if (philosopher->lastAction == UNDEFINED || philosopher->lastAction == SLEEP)
+	philoThink(philosopher);
 
-      // THINK
-      if (philosopher->lastAction == UNDEFINED || philosopher->lastAction == SLEEP) {
-	while (philosopher->lastAction != THINK)
-	  philoThink(philosopher);
-      }
+      else if (philosopher->lastAction == UNDEFINED || philosopher->lastAction == THINK)
+	philoEat(philosopher);
 
-      if (philosopher->lastAction == UNDEFINED || philosopher->lastAction == THINK)
-	while (philosopher->lastAction != EAT)
-	  philoEat(philosopher);
-
-      if (philosopher->lastAction != THINK)
+      else
 	philoSleep(philosopher);
     }
   pthread_exit(NULL);
