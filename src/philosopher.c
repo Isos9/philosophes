@@ -5,7 +5,7 @@
 ** Login   <marwane.khsime@epitech.eu>
 ** 
 ** Started on  Sun Mar 19 12:19:56 2017 Marwane
-** Last update Sun Mar 19 12:34:25 2017 Marwane
+** Last update Sun Mar 19 13:14:25 2017 Sébastien Jacobin
 */
 
 #include "extern.h"
@@ -31,7 +31,6 @@ static	void		*philosopherAlgorithm(void *_philosopher)
 
   philosopher = (t_philo *)_philosopher;
   pthread_barrier_wait(&philosopher->table->barrier);
-
   while (!philosopher->table->limitReached ||
 	 philosopher->nbMeals < philosopher->table->mealsLimit)
     {
